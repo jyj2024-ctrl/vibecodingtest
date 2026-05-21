@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 성격 유형 가이드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .mbti-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .mbti-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mbti-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .mbti-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .mbti-type {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .mbti-nickname {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .mbti-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .mbti-traits {
+            margin-top: 15px;
+        }
+
+        .trait-tag {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 3px;
+            color: #555;
+        }
+
+        /* 색상별 스타일 */
+        .analyst { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .diplomat { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        .sentinel { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .explorer { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+
+        .category-header {
+            text-align: center;
+            margin: 40px 0 20px 0;
+            color: white;
+        }
+
+        .category-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .category-header p {
+            opacity: 0.9;
+        }
+
+        .legend {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .mbti-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .mbti-card {
+                padding: 20px;
+            }
+
+            .mbti-type {
+                font-size: 1.5rem;
+                padding: 6px 12px;
+            }
+
+            .mbti-nickname {
+                font-size: 1rem;
+            }
+
+            .mbti-description {
+                font-size: 0.9rem;
+            }
+
+            .trait-tag {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+
+            .legend-item span:first-child {
+                font-size: 1rem;
+            }
+
+            .legend-item span:last-child {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .mbti-card {
+                padding: 15px;
+            }
+
+            .mbti-type {
+                font-size: 1.3rem;
+            }
+
+            .mbti-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f0f0f0;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .modal-close:hover {
+            background: #e0e0e0;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .strengths-weaknesses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+        }
+
+        .detail-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section.strengths h3 {
+            color: #10b981;
+        }
+
+        .detail-section.weaknesses h3 {
+            color: #ef4444;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .detail-section.strengths li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .detail-section.weaknesses li::before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .detail-section.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .detail-section.full-width li::before {
+            content: "•";
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .strengths-weaknesses-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .modal-type-badge {
+            display: inline-block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .modal-nickname {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .compatibility-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .compatibility-tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .compatibility-tag.bad {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-brain"></i> MBTI 성격 유형 가이드</h1>
+            <p>16가지 성격 유형의 특징을 한눈에 알아보세요</p>
+        </div>
+
+        <div class="legend">
+            <h3><i class="fa-solid fa-palette"></i> 4가지 성격 그룹</h3>
+            <div class="legend-grid">
+                <div class="legend-item analyst">분석가형 (Analysts)</div>
+                <div class="legend-item diplomat">외교관형 (Diplomats)</div>
+                <div class="legend-item sentinel">관리자형 (Sentinels)</div>
+                <div class="legend-item explorer">탐험가형 (Explorers)</div>
+            </div>
+        </div>
+
+        <!-- 분석가형 (Analysts) -->
+        <div class="category-header">
+            <h2>🧠 분석가형 (Analysts)</h2>
+            <p>논리적이고 독립적이며 지적 호기심이 강한 유형</p>
+        </div>
+        <div class="mbti-grid">
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type analyst">INTJ</span>
+                    <span class="mbti-nickname">전략가</span>
+                </div>
+                <div class="mbti-description">
+                    독립적이고 전략적 사고를 하는 완벽주의자입니다. 장기적인 계획을 세우고 목표를 달성하는 데 뛰어납니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">전략적</span>
+                    <span class="trait-tag">독립적</span>
+                    <span class="trait-tag">논리적</span>
+                    <span class="trait-tag">완벽주의</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type analyst">INTP</span>
+                    <span class="mbti-nickname">논리학자</span>
+                </div>
+                <div class="mbti-description">
+                    분석적이고 창의적인 사고를 하는 지식 탐구자입니다. 복잡한 문제를 해결하고 새로운 아이디어를 탐구합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">분석적</span>
+                    <span class="trait-tag">창의적</span>
+                    <span class="trait-tag">호기심</span>
+                    <span class="trait-tag">논리적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type analyst">ENTJ</span>
+                    <span class="mbti-nickname">통솔자</span>
+                </div>
+                <div class="mbti-description">
+                    카리스마 있고 자신감 넘치는 리더입니다. 효율적으로 조직을 이끌고 목표를 달성하는 데 탁월합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">리더십</span>
+                    <span class="trait-tag">결단력</span>
+                    <span class="trait-tag">효율적</span>
+                    <span class="trait-tag">전략적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type analyst">ENTP</span>
+                    <span class="mbti-nickname">변론가</span>
+                </div>
+                <div class="mbti-description">
+                    재치 있고 논쟁을 즐기는 혁신가입니다. 새로운 아이디어를 제시하고 기존의 틀을 깨는 것을 좋아합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">혁신적</span>
+                    <span class="trait-tag">논쟁적</span>
+                    <span class="trait-tag">재치있음</span>
+                    <span class="trait-tag">창의적</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 외교관형 (Diplomats) -->
+        <div class="category-header">
+            <h2>💚 외교관형 (Diplomats)</h2>
+            <p>공감 능력이 뛰어나고 이상주의적이며 열정적인 유형</p>
+        </div>
+        <div class="mbti-grid">
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type diplomat">INFJ</span>
+                    <span class="mbti-nickname">옹호자</span>
+                </div>
+                <div class="mbti-description">
+                    이상주의적이고 통찰력 있는 조력자입니다. 다른 사람을 돕고 세상을 더 나은 곳으로 만들고자 합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">이상주의</span>
+                    <span class="trait-tag">통찰력</span>
+                    <span class="trait-tag">공감적</span>
+                    <span class="trait-tag">헌신적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type diplomat">INFP</span>
+                    <span class="mbti-nickname">중재자</span>
+                </div>
+                <div class="mbti-description">
+                    창의적이고 이상주의적인 몽상가입니다. 자신의 가치관을 중요시하고 진정성 있는 삶을 추구합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">창의적</span>
+                    <span class="trait-tag">이상주의</span>
+                    <span class="trait-tag">감성적</span>
+                    <span class="trait-tag">가치중심</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type diplomat">ENFJ</span>
+                    <span class="mbti-nickname">선도자</span>
+                </div>
+                <div class="mbti-description">
+                    카리스마 있고 영감을 주는 리더입니다. 다른 사람의 잠재력을 이끌어내고 긍정적인 변화를 만듭니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">카리스마</span>
+                    <span class="trait-tag">영감적</span>
+                    <span class="trait-tag">공감적</span>
+                    <span class="trait-tag">리더십</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type diplomat">ENFP</span>
+                    <span class="mbti-nickname">활동가</span>
+                </div>
+                <div class="mbti-description">
+                    열정적이고 창의적인 자유로운 영혼입니다. 새로운 가능성을 탐구하고 사람들과의 연결을 소중히 여깁니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">열정적</span>
+                    <span class="trait-tag">창의적</span>
+                    <span class="trait-tag">자유로움</span>
+                    <span class="trait-tag">사교적</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 관리자형 (Sentinels) -->
+        <div class="category-header">
+            <h2>🛡️ 관리자형 (Sentinels)</h2>
+            <p>실용적이고 책임감 있으며 안정을 추구하는 유형</p>
+        </div>
+        <div class="mbti-grid">
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type sentinel">ISTJ</span>
+                    <span class="mbti-nickname">현실주의자</span>
+                </div>
+                <div class="mbti-description">
+                    신뢰할 수 있고 책임감 강한 실용주의자입니다. 규칙과 전통을 중시하며 체계적으로 일을 처리합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">책임감</span>
+                    <span class="trait-tag">신뢰</span>
+                    <span class="trait-tag">체계적</span>
+                    <span class="trait-tag">실용적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type sentinel">ISFJ</span>
+                    <span class="mbti-nickname">수호자</span>
+                </div>
+                <div class="mbti-description">
+                    헌신적이고 따뜻한 보호자입니다. 다른 사람을 돕고 안정적인 환경을 만드는 데 헌신합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">헌신적</span>
+                    <span class="trait-tag">따뜻함</span>
+                    <span class="trait-tag">배려</span>
+                    <span class="trait-tag">충실함</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type sentinel">ESTJ</span>
+                    <span class="mbti-nickname">경영자</span>
+                </div>
+                <div class="mbti-description">
+                    조직적이고 효율적인 관리자입니다. 명확한 기준과 질서를 중시하며 실용적으로 문제를 해결합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">조직적</span>
+                    <span class="trait-tag">효율적</span>
+                    <span class="trait-tag">실용적</span>
+                    <span class="trait-tag">리더십</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type sentinel">ESFJ</span>
+                    <span class="mbti-nickname">집정관</span>
+                </div>
+                <div class="mbti-description">
+                    배려심 깊고 사교적인 협력자입니다. 조화로운 환경을 만들고 사람들을 돌보는 것을 좋아합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">배려심</span>
+                    <span class="trait-tag">사교적</span>
+                    <span class="trait-tag">협력적</span>
+                    <span class="trait-tag">조화중시</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탐험가형 (Explorers) -->
+        <div class="category-header">
+            <h2>🎨 탐험가형 (Explorers)</h2>
+            <p>유연하고 자발적이며 현재를 즐기는 유형</p>
+        </div>
+        <div class="mbti-grid">
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type explorer">ISTP</span>
+                    <span class="mbti-nickname">장인</span>
+                </div>
+                <div class="mbti-description">
+                    대담하고 실용적인 실험가입니다. 손으로 무언가를 만들고 문제를 해결하는 데 뛰어납니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">실용적</span>
+                    <span class="trait-tag">문제해결</span>
+                    <span class="trait-tag">독립적</span>
+                    <span class="trait-tag">유연함</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type explorer">ISFP</span>
+                    <span class="mbti-nickname">모험가</span>
+                </div>
+                <div class="mbti-description">
+                    유연하고 매력적인 예술가입니다. 아름다움을 추구하고 자유롭게 자신을 표현합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">예술적</span>
+                    <span class="trait-tag">유연함</span>
+                    <span class="trait-tag">자유로움</span>
+                    <span class="trait-tag">감성적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type explorer">ESTP</span>
+                    <span class="mbti-nickname">사업가</span>
+                </div>
+                <div class="mbti-description">
+                    대담하고 활동적인 행동파입니다. 위험을 감수하고 현재의 순간을 즐기며 새로운 경험을 추구합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">대담함</span>
+                    <span class="trait-tag">활동적</span>
+                    <span class="trait-tag">현실적</span>
+                    <span class="trait-tag">즉흥적</span>
+                </div>
+            </div>
+
+            <div class="mbti-card">
+                <div class="mbti-header">
+                    <span class="mbti-type explorer">ESFP</span>
+                    <span class="mbti-nickname">연예인</span>
+                </div>
+                <div class="mbti-description">
+                    자발적이고 열정적인 엔터테이너입니다. 사람들을 즐겁게 하고 순간을 즐기는 것을 좋아합니다.
+                </div>
+                <div class="mbti-traits">
+                    <span class="trait-tag">자발적</span>
+                    <span class="trait-tag">열정적</span>
+                    <span class="trait-tag">사교적</span>
+                    <span class="trait-tag">즐거움</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; color: white;">
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+                <i class="fa-solid fa-info-circle"></i> MBTI는 자기이해의 도구이며, 모든 사람은 고유한 개성을 가지고 있습니다.
+            </p>
+        </div>
+    </div>
+
+    <!-- 모달 -->
+    <div id="mbtiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <div id="modalHeaderContent"></div>
+            </div>
+            <div class="modal-body" id="modalBodyContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const mbtiDetails = {
+            'INTJ': {
+                nickname: '전략가',
+                category: 'analyst',
+                description: '독립적이고 전략적 사고를 하는 완벽주의자',
+                strengths: [
+                    '논리적이고 분석적인 사고',
+                    '장기적인 계획 수립에 탁월',
+                    '독립적이고 자기주도적',
+                    '높은 기준과 목표 지향적',
+                    '복잡한 문제 해결 능력'
+                ],
+                weaknesses: [
+                    '타인의 감정에 둔감할 수 있음',
+                    '완벽주의로 인한 스트레스',
+                    '사교성 부족',
+                    '비판적인 태도'
+                ],
+                career: ['과학자', '엔지니어', '전략 컨설턴트', '프로그래머', '교수'],
+                compatibility: ['ENFP', 'ENTP', 'INFJ']
+            },
+            'INTP': {
+                nickname: '논리학자',
+                category: 'analyst',
+                description: '분석적이고 창의적인 사고를 하는 지식 탐구자',
+                strengths: [
+                    '뛰어난 논리적 분석 능력',
+                    '창의적이고 혁신적인 아이디어',
+                    '객관적이고 공정한 판단',
+                    '지적 호기심이 강함',
+                    '독립적인 사고'
+                ],
+                weaknesses: [
+                    '실행력 부족',
+                    '감정 표현의 어려움',
+                    '일상적인 일 처리 어려움',
+                    '타인과의 소통 부족'
+                ],
+                career: ['연구원', '프로그래머', '수학자', '철학자', '건축가'],
+                compatibility: ['ENTJ', 'ENFP', 'INFJ']
+            },
+            'ENTJ': {
+                nickname: '통솔자',
+                category: 'analyst',
+                description: '카리스마 있고 자신감 넘치는 타고난 리더',
+                strengths: [
+                    '강력한 리더십',
+                    '효율적인 조직 관리',
+                    '빠른 의사결정',
+                    '목표 지향적',
+                    '전략적 사고'
+                ],
+                weaknesses: [
+                    '고집이 세고 융통성 부족',
+                    '타인의 감정 무시',
+                    '지나친 경쟁심',
+                    '권위적인 태도'
+                ],
+                career: ['CEO', '변호사', '경영 컨설턴트', '정치인', '군인'],
+                compatibility: ['INTP', 'INFP', 'ENFP']
+            },
+            'ENTP': {
+                nickname: '변론가',
+                category: 'analyst',
+                description: '재치 있고 논쟁을 즐기는 혁신가',
+                strengths: [
+                    '빠른 사고와 재치',
+                    '혁신적인 아이디어 창출',
+                    '뛰어난 토론 능력',
+                    '적응력이 뛰어남',
+                    '도전적이고 모험적'
+                ],
+                weaknesses: [
+                    '집중력 부족',
+                    '논쟁적인 성향',
+                    '실행력 부족',
+                    '타인 감정 고려 부족'
+                ],
+                career: ['기업가', '변호사', '마케터', '작가', '발명가'],
+                compatibility: ['INFJ', 'INTJ', 'ENFP']
+            },
+            'INFJ': {
+                nickname: '옹호자',
+                category: 'diplomat',
+                description: '이상주의적이고 통찰력 있는 조력자',
+                strengths: [
+                    '깊은 통찰력과 직관',
+                    '타인에 대한 깊은 이해',
+                    '이상을 실현하는 실행력',
+                    '헌신적이고 책임감 강함',
+                    '창의적인 문제 해결'
+                ],
+                weaknesses: [
+                    '완벽주의 성향',
+                    '쉽게 상처받음',
+                    '지나친 이상주의',
+                    '번아웃 위험'
+                ],
+                career: ['상담사', '작가', '교사', '사회복지사', '예술가'],
+                compatibility: ['ENFP', 'ENTP', 'INTJ']
+            },
+            'INFP': {
+                nickname: '중재자',
+                category: 'diplomat',
+                description: '창의적이고 이상주의적인 몽상가',
+                strengths: [
+                    '강한 가치관과 신념',
+                    '뛰어난 창의력',
+                    '공감 능력이 뛰어남',
+                    '진정성 있는 태도',
+                    '개방적인 사고'
+                ],
+                weaknesses: [
+                    '지나치게 이상주의적',
+                    '현실 감각 부족',
+                    '비판에 민감함',
+                    '우유부단함'
+                ],
+                career: ['작가', '예술가', '심리학자', '상담사', '사회운동가'],
+                compatibility: ['ENFJ', 'ENTJ', 'ENFP']
+            },
+            'ENFJ': {
+                nickname: '선도자',
+                category: 'diplomat',
+                description: '카리스마 있고 영감을 주는 리더',
+                strengths: [
+                    '뛰어난 소통 능력',
+                    '타인을 이끄는 리더십',
+                    '공감과 배려심',
+                    '열정적이고 긍정적',
+                    '조직력이 뛰어남'
+                ],
+                weaknesses: [
+                    '타인의 평가에 민감',
+                    '자신을 희생하는 경향',
+                    '지나친 이상주의',
+                    '결정을 내리기 어려움'
+                ],
+                career: ['교사', '상담사', '정치인', 'HR 전문가', '코치'],
+                compatibility: ['INFP', 'ISFP', 'INFJ']
+            },
+            'ENFP': {
+                nickname: '활동가',
+                category: 'diplomat',
+                description: '열정적이고 창의적인 자유로운 영혼',
+                strengths: [
+                    '뛰어난 소통 능력',
+                    '창의적이고 혁신적',
+                    '열정과 에너지 넘침',
+                    '개방적이고 유연함',
+                    '긍정적인 태도'
+                ],
+                weaknesses: [
+                    '집중력 부족',
+                    '계획 실행 어려움',
+                    '쉽게 지루함',
+                    '감정 기복'
+                ],
+                career: ['마케터', '작가', '배우', '상담사', '기업가'],
+                compatibility: ['INTJ', 'INFJ', 'ENTJ']
+            },
+            'ISTJ': {
+                nickname: '현실주의자',
+                category: 'sentinel',
+                description: '신뢰할 수 있고 책임감 강한 실용주의자',
+                strengths: [
+                    '강한 책임감',
+                    '체계적이고 조직적',
+                    '신뢰할 수 있음',
+                    '현실적이고 실용적',
+                    '꼼꼼하고 정확함'
+                ],
+                weaknesses: [
+                    '융통성 부족',
+                    '변화에 대한 저항',
+                    '감정 표현 어려움',
+                    '고집스러움'
+                ],
+                career: ['회계사', '공무원', '군인', '경찰', '은행원'],
+                compatibility: ['ESFP', 'ESTP', 'ISFJ']
+            },
+            'ISFJ': {
+                nickname: '수호자',
+                category: 'sentinel',
+                description: '헌신적이고 따뜻한 보호자',
+                strengths: [
+                    '헌신적이고 충실함',
+                    '타인에 대한 배려',
+                    '책임감이 강함',
+                    '세심하고 꼼꼼함',
+                    '인내심이 많음'
+                ],
+                weaknesses: [
+                    '거절을 잘 못함',
+                    '변화를 두려워함',
+                    '자기주장 부족',
+                    '과도한 희생'
+                ],
+                career: ['간호사', '교사', '사회복지사', '관리자', '비서'],
+                compatibility: ['ESFP', 'ESTP', 'ISTJ']
+            },
+            'ESTJ': {
+                nickname: '경영자',
+                category: 'sentinel',
+                description: '조직적이고 효율적인 관리자',
+                strengths: [
+                    '뛰어난 조직력',
+                    '효율적인 관리',
+                    '명확한 기준과 원칙',
+                    '결단력 있음',
+                    '실용적 문제 해결'
+                ],
+                weaknesses: [
+                    '융통성 부족',
+                    '권위적인 태도',
+                    '타인 감정 무시',
+                    '고집스러움'
+                ],
+                career: ['경영자', '군인', '판사', '경찰', '관리자'],
+                compatibility: ['ISFP', 'ISTP', 'ESFJ']
+            },
+            'ESFJ': {
+                nickname: '집정관',
+                category: 'sentinel',
+                description: '배려심 깊고 사교적인 협력자',
+                strengths: [
+                    '뛰어난 대인관계 능력',
+                    '배려심과 친절함',
+                    '협력적이고 조화 중시',
+                    '책임감이 강함',
+                    '실용적 접근'
+                ],
+                weaknesses: [
+                    '비판에 민감함',
+                    '타인의 인정 필요',
+                    '갈등 회피',
+                    '변화 적응 어려움'
+                ],
+                career: ['간호사', '교사', '이벤트 기획자', '영업', 'PR 전문가'],
+                compatibility: ['ISFP', 'ISTP', 'ESTJ']
+            },
+            'ISTP': {
+                nickname: '장인',
+                category: 'explorer',
+                description: '대담하고 실용적인 실험가',
+                strengths: [
+                    '뛰어난 문제 해결 능력',
+                    '실용적이고 효율적',
+                    '침착하고 논리적',
+                    '독립적',
+                    '위기 대처 능력'
+                ],
+                weaknesses: [
+                    '감정 표현 어려움',
+                    '장기 계획 부족',
+                    '타인과의 소통 부족',
+                    '쉽게 지루함'
+                ],
+                career: ['엔지니어', '정비사', '조종사', '운동선수', '경찰'],
+                compatibility: ['ESFJ', 'ESTJ', 'ISFP']
+            },
+            'ISFP': {
+                nickname: '모험가',
+                category: 'explorer',
+                description: '유연하고 매력적인 예술가',
+                strengths: [
+                    '뛰어난 미적 감각',
+                    '유연하고 개방적',
+                    '공감 능력',
+                    '겸손하고 친절함',
+                    '현재를 즐김'
+                ],
+                weaknesses: [
+                    '계획성 부족',
+                    '비판에 민감',
+                    '경쟁을 싫어함',
+                    '장기 목표 설정 어려움'
+                ],
+                career: ['예술가', '디자이너', '음악가', '수의사', '간호사'],
+                compatibility: ['ESFJ', 'ESTJ', 'ISTP']
+            },
+            'ESTP': {
+                nickname: '사업가',
+                category: 'explorer',
+                description: '대담하고 활동적인 행동파',
+                strengths: [
+                    '뛰어난 실행력',
+                    '빠른 판단과 대처',
+                    '사교적이고 활발함',
+                    '현실적이고 실용적',
+                    '위험 감수 능력'
+                ],
+                weaknesses: [
+                    '충동적인 결정',
+                    '장기 계획 부족',
+                    '타인 감정 무시',
+                    '인내심 부족'
+                ],
+                career: ['영업', '기업가', '운동선수', '응급구조사', '경찰'],
+                compatibility: ['ISFJ', 'ISTJ', 'ESFP']
+            },
+            'ESFP': {
+                nickname: '연예인',
+                category: 'explorer',
+                description: '자발적이고 열정적인 엔터테이너',
+                strengths: [
+                    '뛰어난 사교성',
+                    '낙천적이고 긍정적',
+                    '순간을 즐김',
+                    '공감 능력',
+                    '열정적이고 활발함'
+                ],
+                weaknesses: [
+                    '계획성 부족',
+                    '쉽게 지루함',
+                    '비판에 민감',
+                    '충동적인 결정'
+                ],
+                career: ['배우', '가수', '이벤트 기획자', '영업', '엔터테이너'],
+                compatibility: ['ISFJ', 'ISTJ', 'ESTP']
+            }
+        };
+
+        function openModal(type) {
+            const data = mbtiDetails[type];
+            const modal = document.getElementById('mbtiModal');
+            
+            // 헤더 콘텐츠
+            const headerHTML = `
+                <div class="modal-type-badge ${data.category}">${type}</div>
+                <div class="modal-nickname">${data.nickname}</div>
+                <p style="color: #666; margin-top: 5px;">${data.description}</p>
+            `;
+            
+            // 바디 콘텐츠
+            const bodyHTML = `
+                <div class="strengths-weaknesses-grid">
+                    <div class="detail-section strengths">
+                        <h3><i class="fa-solid fa-star"></i> 강점</h3>
+                        <ul>
+                            ${data.strengths.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="detail-section weaknesses">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> 약점 (발전 포인트)</h3>
+                        <ul>
+                            ${data.weaknesses.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="detail-section full-width">
+                    <h3><i class="fa-solid fa-briefcase"></i> 추천 직업</h3>
+                    <div class="mbti-traits">
+                        ${data.career.map(c => `<span class="trait-tag">${c}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section full-width">
+                    <h3><i class="fa-solid fa-heart"></i> 궁합이 좋은 유형</h3>
+                    <div class="compatibility-tags">
+                        ${data.compatibility.map(c => `<span class="compatibility-tag">${c}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalHeaderContent').innerHTML = headerHTML;
+            document.getElementById('modalBodyContent').innerHTML = bodyHTML;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('mbtiModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 모달 배경 클릭 시 닫기
+        document.getElementById('mbtiModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 모든 MBTI 카드에 클릭 이벤트 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.mbti-card');
+            cards.forEach(card => {
+                const typeElement = card.querySelector('.mbti-type');
+                const mbtiType = typeElement.textContent.trim();
+                card.addEventListener('click', function() {
+                    openModal(mbtiType);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

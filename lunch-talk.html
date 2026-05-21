@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>런치 토크 안내 - Team Building Day</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Additional styles for lunch talk page */
+        .lunch-talk-container {
+            background-color: #f3f4f6;
+            padding: 40px 0;
+        }
+
+        /* Slide Container */
+        .slide-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background-color: #fffbf5;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 50px 60px;
+            min-height: 720px;
+        }
+
+        /* Abstract Background Elements */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(230, 126, 34, 0.1) 0%, rgba(255, 251, 245, 0) 70%);
+            z-index: 0;
+        }
+
+        .slide-container::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(22, 160, 133, 0.08) 0%, rgba(255, 251, 245, 0) 70%);
+            z-index: 0;
+        }
+
+        .slide-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-header {
+            margin-bottom: 30px;
+            border-left: 6px solid #E67E22;
+            padding-left: 20px;
+        }
+
+        .slide-title {
+            font-size: 50px;
+            font-weight: 700;
+            color: #2C3E50;
+            letter-spacing: -1.5px;
+        }
+
+        .slide-subtitle {
+            font-size: 22px;
+            color: #7F8C8D;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        /* Layout: Main Content Area */
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            flex-grow: 1;
+        }
+
+        /* Left Side: Topics and Guidelines */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-box {
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .section-label {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #E67E22;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Topics List (Vertical) */
+        .topics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .topic-tile {
+            background: #fff8f0;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #E67E22;
+        }
+
+        .topic-tile h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+
+        .topic-tile p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #5D6D7E;
+        }
+
+        /* Ground Rules List */
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rules-list li {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #34495E;
+        }
+
+        .rules-list i {
+            color: #16A085;
+            font-size: 18px;
+        }
+
+        /* Right Side: Team Table (Vertical Stack) */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .team-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        /* Team Table Styling */
+        .team-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            table-layout: fixed;
+        }
+
+        .team-table th {
+            background-color: #2C3E50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            width: 25%;
+        }
+
+        .team-table td {
+            padding: 10px;
+            border: 1px solid #f0f0f0;
+            text-align: center;
+            color: #34495E;
+            height: 42px;
+        }
+
+        .team-table tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .footer-note {
+            margin-top: auto;
+            text-align: right;
+            font-size: 14px;
+            color: #BDC3C7;
+            font-style: italic;
+        }
+
+        .team-header-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #2C3E50;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .text-orange-500 { color: #E67E22; }
+        .text-green-500 { color: #16A085; }
+        .text-blue-500 { color: #3498DB; }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 1024px) {
+            .slide-container {
+                padding: 30px 40px;
+                min-height: auto;
+            }
+
+            .slide-title {
+                font-size: 36px;
+            }
+
+            .slide-subtitle {
+                font-size: 18px;
+            }
+
+            .content-area {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .lunch-talk-container {
+                padding: 20px 10px;
+            }
+
+            .slide-container {
+                padding: 25px 20px;
+                border-radius: 12px;
+                min-height: auto;
+            }
+
+            .slide-container::before,
+            .slide-container::after {
+                display: none;
+            }
+
+            .slide-header {
+                margin-bottom: 20px;
+                padding-left: 15px;
+                border-left-width: 4px;
+            }
+
+            .slide-title {
+                font-size: 24px;
+                letter-spacing: -0.5px;
+            }
+
+            .slide-subtitle {
+                font-size: 14px;
+                margin-top: 5px;
+            }
+
+            .slide-header p {
+                font-size: 13px !important;
+            }
+
+            .content-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .section-label {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            .topic-tile h3 {
+                font-size: 16px;
+            }
+
+            .topic-tile p {
+                font-size: 13px;
+            }
+
+            .rules-list li {
+                font-size: 13px;
+                padding: 8px 0;
+            }
+
+            .team-header-label {
+                font-size: 14px;
+            }
+
+            .team-table {
+                font-size: 13px;
+            }
+
+            .team-table td {
+                padding: 8px 4px;
+                font-size: 12px;
+                height: auto;
+            }
+
+            .section-box {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide-container {
+                padding: 20px 15px;
+            }
+
+            .slide-title {
+                font-size: 20px;
+            }
+
+            .slide-subtitle {
+                font-size: 12px;
+            }
+
+            .slide-header p {
+                font-size: 11px !important;
+            }
+
+            .topic-tile h3 {
+                font-size: 14px;
+            }
+
+            .topic-tile p {
+                font-size: 12px;
+            }
+
+            .team-table td {
+                padding: 6px 2px;
+                font-size: 11px;
+            }
+
+            .section-label {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1 class="header-title">🎉 학습혁신담당 Team Building Day! 🎉</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="team-game.html">팀구성 게임</a></li>
+                    <li><a href="lunch-talk.html">런치 토크 안내</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="lunch-talk-container">
+        <div class="slide-container" id="slide1">
+            <!-- Header Section -->
+            <div class="slide-header">
+                <h1 class="slide-title">맛있는 대화, 더 가까워지는 우리</h1>
+                <p class="slide-subtitle">학습혁신담당 런치 토크 가이드 — "함께 식사하며 발견하는 서로의 이야기"</p>
+                <p style="font-size: 15px; color: #E67E22; margin-top: 10px; font-weight: 600;">
+                    <i class="fa-solid fa-user-tie" style="color: #E67E22;"></i> 각 팀 맨 첫줄에 배정된 분이 조장 역할을 해주세요. (팀 내 메뉴 선정, 결제, 대화 주도 등)
+                </p>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="content-area">
+                <!-- Left Panel: Conversation Topics and Guide -->
+                <div class="left-panel">
+                    
+                    <!-- Topics Section -->
+                    <div class="section-box">
+                        <div class="section-label"><i class="fa-solid fa-utensils"></i> 오늘의 대화 메뉴 (Topics)</div>
+                        <div class="topics-list">
+                            <div class="topic-tile">
+                                <h3>01. 나의 '요즘' 관심사</h3>
+                                <p>최근 내 일상에 가장 큰 즐거움을 주는 것은 무엇인가요? (취미, 운동, 유튜브 채널, 숨은 맛집 등)</p>
+                            </div>
+                            <div class="topic-tile">
+                                <h3>02. 나의 MBTI</h3>
+                                <p>서로의 MBTI를 맞춰보고 각 MBTI의 성격적 특성에 대해 공유해 주세요.</p>
+                                <div style="margin-top: 12px; text-align: center;">
+                                    <a href="mbti-guide.html" target="_blank" style="display: inline-block; background-color: #E67E22; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
+                                        <i class="fa-solid fa-brain"></i> MBTI 보러가기
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ground Rules Section -->
+                    <div class="section-box" style="flex-grow: 1;">
+                        <div class="section-label"><i class="fa-solid fa-heart"></i> 즐거운 식사를 위한 약속</div>
+                        <ul class="rules-list">
+                            <li><i class="fa-solid fa-check-circle"></i> 업무는 잠시 Off, 사람 냄새는 On!</li>
+                            <li><i class="fa-solid fa-check-circle"></i> 경청하며 공통점 발견하기</li>
+                            <li><i class="fa-solid fa-check-circle"></i> 서로의 '다름'을 존중하고 즐기기</li>
+                            <li><i class="fa-solid fa-check-circle"></i> 칭찬과 긍정적인 반응 아끼지 않기</li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-note">
+                        * 배정된 팀원들과 자유롭게 대화를 나누며 즐거운 식사 시간 되시길 바랍니다.
+                    </div>
+                </div>
+
+                <!-- Right Panel: Vertical Team Distribution -->
+                <div class="right-panel">
+                    <div class="section-label"><i class="fa-solid fa-users-viewfinder"></i> 오늘의 팀 구성 (18인)</div>
+                    
+                    <!-- Team A -->
+                    <div class="team-container">
+                        <div class="team-header-label"><i class="fa-solid fa-a text-orange-500"></i> A팀 명단</div>
+                        <table class="team-table">
+                            <tbody id="teamA-tbody">
+                                <tr><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Team B -->
+                    <div class="team-container">
+                        <div class="team-header-label"><i class="fa-solid fa-b text-green-500"></i> B팀 명단</div>
+                        <table class="team-table">
+                            <tbody id="teamB-tbody">
+                                <tr><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Team C -->
+                    <div class="team-container">
+                        <div class="team-header-label"><i class="fa-solid fa-c text-blue-500"></i> C팀 명단</div>
+                        <table class="team-table">
+                            <tbody id="teamC-tbody">
+                                <tr><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td><td>[성함]</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Additional Space for Notes or Custom Grouping -->
+                    <div class="section-box" style="padding: 15px; background-color: #f8fafc; border-style: dashed;">
+                        <p style="font-size: 13px; color: #64748b; text-align: center;">
+                            <i class="fa-solid fa-info-circle mr-1"></i> 팀별로 이동하여 식사 장소로 이동해 주세요.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 학습혁신담당 Team Building Day. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Load team data from localStorage and display
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTeamData();
+        });
+
+        function loadTeamData() {
+            const teamData = localStorage.getItem('lunchTalkTeams');
+            
+            if (!teamData) {
+                console.log('No team data found');
+                return;
+            }
+
+            try {
+                const teams = JSON.parse(teamData);
+                
+                // Update Team A
+                if (teams[0] && teams[0].length > 0) {
+                    updateTeamTable('teamA-tbody', teams[0]);
+                }
+                
+                // Update Team B
+                if (teams[1] && teams[1].length > 0) {
+                    updateTeamTable('teamB-tbody', teams[1]);
+                }
+                
+                // Update Team C
+                if (teams[2] && teams[2].length > 0) {
+                    updateTeamTable('teamC-tbody', teams[2]);
+                }
+            } catch (e) {
+                console.error('Error loading team data:', e);
+            }
+        }
+
+        function updateTeamTable(tbodyId, members) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+
+            // Create cells for 6 members (first member is the leader)
+            const cells = [];
+            for (let i = 0; i < 6; i++) {
+                if (members[i]) {
+                    cells.push(`<td>${members[i].name}</td>`);
+                } else {
+                    cells.push(`<td>[성함]</td>`);
+                }
+            }
+
+            tbody.innerHTML = `<tr>${cells.join('')}</tr>`;
+        }
+    </script>
+</body>
+</html>

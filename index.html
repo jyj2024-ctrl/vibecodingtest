@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습혁신담당 Team Building Day!</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .schedule-card {
+            background: #f0fdf4;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
+        }
+
+        .schedule-card h4 {
+            color: #10b981;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .goals-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Mobile Responsive Styles for Home Page */
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .schedule-card {
+                padding: 12px;
+            }
+
+            .schedule-card h4 {
+                font-size: 0.95rem;
+            }
+
+            .schedule-card p,
+            .schedule-card ol {
+                font-size: 0.85rem !important;
+            }
+
+            .schedule-card ol li {
+                margin-bottom: 4px;
+            }
+
+            .goals-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            main .container {
+                padding: 1.25rem;
+            }
+
+            main .container > div {
+                padding: 15px !important;
+            }
+
+            main .container h3 {
+                font-size: 1.1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .schedule-card {
+                padding: 10px;
+            }
+
+            .schedule-card h4 {
+                font-size: 0.9rem;
+            }
+
+            .schedule-card p,
+            .schedule-card ol {
+                font-size: 0.8rem !important;
+            }
+
+            main .container > div {
+                padding: 12px !important;
+            }
+
+            main .container h3 {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1 class="header-title">🎉 학습혁신담당 Team Building Day! 🎉</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="team-game.html">팀구성 게임</a></li>
+                    <li><a href="lunch-talk.html">런치 토크 안내</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>환영합니다! 🌟</h1>
+            <p class="text-center" style="font-size: 1.2rem; color: var(--text-dark); margin-bottom: 2rem;">
+                학습혁신담당 팀빌딩 데이에 오신 것을 환영합니다!<br>
+                함께 즐거운 시간을 만들어가요.
+            </p>
+
+            <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 2px solid #10b981;">
+                <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.3rem; text-align: center;">
+                    <i class="fa-solid fa-calendar-days"></i> 일정 및 진행 안내
+                </h3>
+                
+                <div class="schedule-grid">
+                    <div class="schedule-card">
+                        <h4 style="color: #10b981; margin-bottom: 8px; font-size: 1rem;">
+                            <i class="fa-solid fa-clock"></i> 일정
+                        </h4>
+                        <p style="font-size: 0.95rem; margin: 0; color: #333; line-height: 1.4;">
+                            <strong>3/26(목) 11:30~13:00</strong>
+                        </p>
+                    </div>
+
+                    <div class="schedule-card">
+                        <h4 style="color: #10b981; margin-bottom: 8px; font-size: 1rem;">
+                            <i class="fa-solid fa-list-check"></i> 진행 프로세스
+                        </h4>
+                        <ol style="margin: 0; padding-left: 18px; line-height: 1.5; color: #333; font-size: 0.9rem;">
+                            <li><strong>팀구성 게임:</strong> 본인 이름 클릭</li>
+                            <li><strong>런치 토크:</strong> 팀 명단 확인 후 식사 및 대화</li>
+                        </ol>
+                    </div>
+
+                    <div class="schedule-card">
+                        <h4 style="color: #10b981; margin-bottom: 8px; font-size: 1rem;">
+                            <i class="fa-solid fa-won-sign"></i> 예산
+                        </h4>
+                        <p style="font-size: 0.95rem; margin: 0; color: #333; line-height: 1.4;">
+                            <strong>인당 최대 20,000원<br>(점심식사+음료 합산)</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <h2 class="text-center">💡 팀빌딩의 목표</h2>
+            <div class="card-grid goals-grid">
+                <div class="card">
+                    <h3>🤝 소통 강화</h3>
+                    <p>서로를 이해하고 원활한 소통의 기회를 만듭니다.</p>
+                </div>
+                <div class="card">
+                    <h3>🎯 협업 증진</h3>
+                    <p>함께 목표를 달성하며 팀워크를 향상시킵니다.</p>
+                </div>
+                <div class="card">
+                    <h3>😊 즐거운 분위기</h3>
+                    <p>편안하고 즐거운 업무 환경을 조성합니다.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 학습혁신담당 Team Building Day. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

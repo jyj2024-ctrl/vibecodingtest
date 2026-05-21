@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팀구성 게임 - Team Building Day</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .member-btn {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .member-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .member-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+            filter: grayscale(1);
+        }
+
+        .assigned-anim {
+            animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dept-tag {
+            font-size: 0.65rem;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+
+        /* Modal styling for password */
+        #passwordModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .glass-card {
+                border-radius: 12px;
+                padding: 1rem !important;
+            }
+
+            h1.text-3xl {
+                font-size: 1.5rem !important;
+            }
+
+            h2.text-lg {
+                font-size: 1rem !important;
+            }
+
+            h3.text-lg {
+                font-size: 1rem !important;
+            }
+
+            .member-btn {
+                padding: 0.6rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .dept-tag {
+                font-size: 0.6rem;
+                padding: 1px 4px;
+            }
+
+            /* Stack team boards vertically on mobile */
+            .lg\:col-span-8 > div {
+                min-height: 300px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            h1.text-3xl {
+                font-size: 1.3rem !important;
+            }
+
+            .member-btn {
+                padding: 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* 로그인 관련 스타일 */
+        .auth-section {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-btn {
+            background: white;
+            color: #10b981;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .auth-section {
+                position: static;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content" style="position: relative;">
+            <h1 class="header-title">🎉 학습혁신담당 Team Building Day! 🎉</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="team-game.html">팀구성 게임</a></li>
+                    <li><a href="lunch-talk.html">런치 토크 안내</a></li>
+                </ul>
+            </nav>
+            <!-- 로그인/로그아웃 버튼 -->
+            <div class="auth-section">
+                <!-- 로그인 전 버튼 -->
+                <button id="loginBtn" class="login-btn" onclick="signInWithGoogle()" style="display: none;">
+                    <i class="fa-brands fa-google"></i>
+                    <span>로그인</span>
+                </button>
+                <!-- 로그인 후 프로필 -->
+                <div id="userProfile" style="display: none;" class="user-profile">
+                    <img id="userAvatar" class="user-avatar" src="" alt="User">
+                    <span id="userName" style="font-weight: 600; font-size: 0.9rem;"></span>
+                    <button class="logout-btn" onclick="signOut()">
+                        <i class="fa-solid fa-right-from-bracket"></i> 로그아웃
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">🍽️ 런치 토크: 내 자리를 찾아라!</h1>
+            <p class="text-slate-500">지정된 부서별 황금 비율에 따라 팀이 실시간으로 구성됩니다.</p>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="mb-8 max-w-md mx-auto">
+            <div class="flex justify-between text-sm mb-2 text-slate-600 font-medium">
+                <span>배정 현황</span>
+                <span id="progressText">0 / 16명</span>
+            </div>
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                <div id="progressBar" class="progress-bar bg-blue-500 h-full w-0"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left: Member Selector -->
+            <div class="lg:col-span-4 glass-card p-6 border border-white">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-fingerprint text-blue-500"></i>
+                    본인의 이름을 클릭하세요
+                </h2>
+                <div id="memberContainer" class="space-y-4 overflow-hidden pr-2">
+                    <!-- Members will be injected here -->
+                </div>
+            </div>
+
+            <!-- Right: Team Boards -->
+            <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="team-container glass-card border-t-4 border-indigo-500 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-indigo-600 text-lg">A팀</h3>
+                        <span id="count1" class="text-xs font-bold bg-indigo-50 text-indigo-500 px-2 py-1 rounded-full">0/6</span>
+                    </div>
+                    <div id="teamBoard1" class="space-y-2 min-h-[400px]"></div>
+                </div>
+
+                <div class="team-container glass-card border-t-4 border-emerald-500 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-emerald-600 text-lg">B팀</h3>
+                        <span id="count2" class="text-xs font-bold bg-emerald-50 text-emerald-500 px-2 py-1 rounded-full">0/6</span>
+                    </div>
+                    <div id="teamBoard2" class="space-y-2 min-h-[400px]"></div>
+                </div>
+
+                <div class="team-container glass-card border-t-4 border-amber-500 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-amber-600 text-lg">C팀</h3>
+                        <span id="count3" class="text-xs font-bold bg-amber-50 text-amber-500 px-2 py-1 rounded-full">0/6</span>
+                    </div>
+                    <div id="teamBoard3" class="space-y-2 min-h-[400px]"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="mt-8 text-center">
+            <button onclick="showPasswordModal()" class="text-slate-400 hover:text-slate-600 text-sm transition-colors">
+                <i class="fa-solid fa-rotate-right mr-1"></i> 데이터 초기화
+            </button>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="p-4">
+        <div class="glass-card p-8 w-full max-w-sm border border-white">
+            <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">초기화 비밀번호 입력</h3>
+            <input type="password" id="passwordInput" class="w-full p-3 border border-slate-200 rounded-xl mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-center" placeholder="비밀번호를 입력하세요">
+            <div class="flex gap-2">
+                <button onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-semibold hover:bg-slate-200 transition-colors">취소</button>
+                <button onclick="handleReset()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md">확인</button>
+            </div>
+            <p id="errorMsg" class="text-red-500 text-xs mt-3 text-center hidden">비밀번호가 일치하지 않습니다.</p>
+        </div>
+    </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 학습혁신담당 Team Building Day. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Firebase 전역 변수
+        let currentUser = null;
+        let unsubscribeAuth = null;
+
+        // Firebase 인증 상태 감지
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // 로그인됨
+                currentUser = user;
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('userProfile').style.display = 'flex';
+                document.getElementById('userName').textContent = user.displayName || user.email;
+                document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/36';
+                
+                console.log('User logged in:', user.email);
+                
+                // 사용자 정보 Firestore에 저장
+                saveUserProfile(user);
+                
+                // Firestore에서 팀 배정 데이터 로드
+                loadTeamAssignmentsFromFirestore();
+            } else {
+                // 로그아웃됨
+                currentUser = null;
+                document.getElementById('loginBtn').style.display = 'flex';
+                document.getElementById('userProfile').style.display = 'none';
+                console.log('User logged out');
+            }
+        });
+
+        // Google 로그인
+        async function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await firebase.auth().signInWithPopup(provider);
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('로그인 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        // 로그아웃
+        async function signOut() {
+            if (confirm('로그아웃하시겠습니까?')) {
+                try {
+                    await firebase.auth().signOut();
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('로그아웃 중 오류가 발생했습니다');
+                }
+            }
+        }
+
+        // 사용자 프로필 저장
+        async function saveUserProfile(user) {
+            try {
+                await firebase.firestore().collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    lastLoginAt: Date.now()
+                }, { merge: true });
+            } catch (error) {
+                console.error('Error saving user profile:', error);
+            }
+        }
+
+        // Firestore에서 팀 배정 로드
+        async function loadTeamAssignmentsFromFirestore() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await firebase.firestore()
+                    .collection('teamAssignments')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                
+                if (!snapshot.empty) {
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        console.log('Loaded team assignment from Firestore:', data);
+                        
+                        // 기존 배정 복원
+                        const memberId = data.memberId;
+                        const teamIndex = data.teamIndex;
+                        
+                        if (!assignedIds.has(memberId)) {
+                            assignedIds.add(memberId);
+                            const member = membersData.find(m => m.id === memberId);
+                            if (member) {
+                                teams[teamIndex].push(member);
+                                assignedCount++;
+                            }
+                        }
+                    });
+                    
+                    // UI 업데이트
+                    renderMembers();
+                    renderTeams();
+                    updateProgress();
+                }
+            } catch (error) {
+                console.error('Error loading from Firestore:', error);
+            }
+        }
+
+        // Firestore에 팀 배정 저장
+        async function saveTeamAssignmentToFirestore(memberId, teamIndex) {
+            if (!currentUser) {
+                console.error('No user logged in');
+                return;
+            }
+            
+            const member = membersData.find(m => m.id === memberId);
+            if (!member) return;
+            
+            try {
+                await firebase.firestore().collection('teamAssignments').add({
+                    userId: currentUser.uid,
+                    email: currentUser.email,
+                    displayName: currentUser.displayName,
+                    memberId: memberId,
+                    memberName: member.name,
+                    department: member.dept,
+                    teamIndex: teamIndex,
+                    assignedAt: Date.now()
+                });
+                
+                console.log('Team assignment saved to Firestore');
+                
+                // 사용자 프로필에도 업데이트
+                await firebase.firestore().collection('users').doc(currentUser.uid).update({
+                    teamAssignment: {
+                        memberId: memberId,
+                        teamIndex: teamIndex,
+                        updatedAt: Date.now()
+                    }
+                });
+            } catch (error) {
+                console.error('Error saving to Firestore:', error);
+            }
+        }
+
+        const membersData = [
+            { id: 1, name: "정화연", dept: "학습혁신담당", color: "bg-purple-100 text-purple-700" },
+            { id: 2, name: "김정호", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 3, name: "신귀식", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 4, name: "김행운", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 5, name: "박소현", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 6, name: "이수연", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 7, name: "김재균", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 8, name: "엄정현", dept: "영상미디어팀", color: "bg-blue-100 text-blue-700" },
+            { id: 9, name: "김은영", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 10, name: "장연주", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 11, name: "이서희", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 13, name: "허우림", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 14, name: "강슬기", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 15, name: "김민지", dept: "인재육성팀", color: "bg-green-100 text-green-700" },
+            { id: 17, name: "김혜인", dept: "컬처파트", color: "bg-orange-100 text-orange-700" },
+            { id: 18, name: "김수빈", dept: "컬처파트", color: "bg-orange-100 text-orange-700" }
+        ];
+
+        let finalMapping = {}; 
+        
+        const initMapping = () => {
+            // A팀 6명, B팀 5명, C팀 5명
+            const teamSlots = [
+                { id: 0, name: "A팀", culture: 1, head: 0, media: 2, talent: 2, total: 5 },  // A팀: 컬처1 + 영상2 + 인재2 = 5명
+                { id: 1, name: "B팀", culture: 1, head: 0, media: 2, talent: 2, total: 5 },  // B팀: 컬처1 + 영상2 + 인재2 = 5명
+                { id: 2, name: "C팀", culture: 0, head: 1, media: 3, talent: 2, total: 6 }   // C팀: 학습1 + 영상3 + 인재2 = 6명
+            ];
+
+            console.log('Team slots:', teamSlots);
+            console.log('Total members per team:', teamSlots.map(t => `${t.name}: ${t.total}명`));
+
+            const depts = {
+                "학습혁신담당": membersData.filter(m => m.dept === "학습혁신담당").sort(() => Math.random() - 0.5),
+                "컬처파트": membersData.filter(m => m.dept === "컬처파트").sort(() => Math.random() - 0.5),
+                "인재육성팀": membersData.filter(m => m.dept === "인재육성팀").sort(() => Math.random() - 0.5),
+                "영상미디어팀": membersData.filter(m => m.dept === "영상미디어팀").sort(() => Math.random() - 0.5)
+            };
+
+            console.log('Department counts:', {
+                학습혁신담당: depts["학습혁신담당"].length,
+                컬처파트: depts["컬처파트"].length,
+                인재육성팀: depts["인재육성팀"].length,
+                영상미디어팀: depts["영상미디어팀"].length,
+                총원: membersData.length
+            });
+
+            const mapping = {};
+            teamSlots.forEach(slot => {
+                for(let i=0; i<slot.head; i++) {
+                    const member = depts["학습혁신담당"].pop();
+                    if (member) mapping[member.id] = slot.id;
+                }
+                for(let i=0; i<slot.culture; i++) {
+                    const member = depts["컬처파트"].pop();
+                    if (member) mapping[member.id] = slot.id;
+                }
+                for(let i=0; i<slot.talent; i++) {
+                    const member = depts["인재육성팀"].pop();
+                    if (member) mapping[member.id] = slot.id;
+                }
+                for(let i=0; i<slot.media; i++) {
+                    const member = depts["영상미디어팀"].pop();
+                    if (member) mapping[member.id] = slot.id;
+                }
+            });
+
+            console.log('Mapping created:', mapping);
+            console.log('Total mapped members:', Object.keys(mapping).length);
+            
+            return mapping;
+        };
+
+        finalMapping = initMapping();
+        let assignedCount = 0;
+        const teams = [[], [], []];
+        const assignedIds = new Set();
+        let isPolling = false;
+
+        // API 기반 실시간 동기화 함수
+        const loadTeamsFromAPI = async () => {
+            try {
+                const response = await fetch('tables/team_assignments?limit=100');
+                const data = await response.json();
+                
+                if (!data.data || data.data.length === 0) {
+                    console.log('No team assignments found');
+                    return;
+                }
+
+                // Clear current state
+                teams[0] = [];
+                teams[1] = [];
+                teams[2] = [];
+                assignedIds.clear();
+                assignedCount = 0;
+
+                // Rebuild teams from API data
+                data.data.forEach(assignment => {
+                    const member = membersData.find(m => m.id === assignment.member_id);
+                    if (member && assignment.team_index >= 0 && assignment.team_index <= 2) {
+                        teams[assignment.team_index].push(member);
+                        assignedIds.add(member.id);
+                        assignedCount++;
+                    }
+                });
+
+                // Update UI
+                updateAllBoards();
+                updateProgress();
+                updateMemberButtons();
+                
+                // Save to localStorage for lunch-talk page
+                saveTeamsToLocalStorage();
+
+                console.log('Loaded from API:', { assignedCount, teams });
+            } catch (error) {
+                console.error('Error loading from API:', error);
+            }
+        };
+
+        const saveAssignmentToAPI = async (member, teamIndex) => {
+            try {
+                const response = await fetch('tables/team_assignments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_id: member.id,
+                        member_name: member.name,
+                        department: member.dept,
+                        team_index: teamIndex,
+                        assigned_at: Date.now()
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to save assignment');
+                }
+                
+                const result = await response.json();
+                console.log('Saved to API:', result);
+                return true;
+            } catch (error) {
+                console.error('Error saving to API:', error);
+                return false;
+            }
+        };
+
+        const clearAllAssignments = async () => {
+            try {
+                const response = await fetch('tables/team_assignments?limit=100');
+                const data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    // Delete all assignments
+                    for (const assignment of data.data) {
+                        await fetch(`tables/team_assignments/${assignment.id}`, {
+                            method: 'DELETE'
+                        });
+                    }
+                }
+                console.log('All assignments cleared from API');
+                return true;
+            } catch (error) {
+                console.error('Error clearing assignments:', error);
+                return false;
+            }
+        };
+
+        // Polling for real-time updates
+        const startPolling = () => {
+            if (isPolling) return;
+            isPolling = true;
+            
+            setInterval(async () => {
+                await loadTeamsFromAPI();
+            }, 2000); // Poll every 2 seconds
+        };
+
+        const updateAllBoards = () => {
+            for (let i = 1; i <= 3; i++) {
+                const board = document.getElementById(`teamBoard${i}`);
+                const countLabel = document.getElementById(`count${i}`);
+                const teamMembers = teams[i - 1];
+
+                countLabel.innerText = `${teamMembers.length}/6`;
+                board.innerHTML = '';
+
+                teamMembers.forEach(member => {
+                    const memberEl = document.createElement('div');
+                    memberEl.className = 'assigned-anim flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm';
+                    memberEl.innerHTML = `
+                        <span class="font-bold text-slate-800">${member.name}</span>
+                        <span class="dept-tag ${member.color}">${member.dept.replace('팀', '').replace('파트', '')}</span>
+                    `;
+                    board.appendChild(memberEl);
+                });
+            }
+        };
+
+        const updateMemberButtons = () => {
+            membersData.forEach(member => {
+                const btn = document.getElementById(`btn-${member.id}`);
+                if (btn) {
+                    if (assignedIds.has(member.id)) {
+                        btn.disabled = true;
+                        btn.classList.add('bg-slate-100', 'text-slate-300');
+                        if (!btn.innerHTML.includes('fa-check')) {
+                            btn.innerHTML += ' <i class="fa-solid fa-check ml-1"></i>';
+                        }
+                    } else {
+                        btn.disabled = false;
+                        btn.classList.remove('bg-slate-100', 'text-slate-300');
+                        btn.innerHTML = member.name;
+                    }
+                }
+            });
+        };
+
+        const renderMembers = () => {
+            const container = document.getElementById('memberContainer');
+            const groups = {};
+            membersData.forEach(m => {
+                if(!groups[m.dept]) groups[m.dept] = [];
+                groups[m.dept].push(m);
+            });
+
+            container.innerHTML = Object.entries(groups).map(([dept, people]) => `
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-1.5 tracking-wider">${dept}</h3>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        ${people.map(p => `
+                            <button id="btn-${p.id}" onclick="assignMember(${p.id})" class="member-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 text-left hover:border-blue-400">
+                                ${p.name}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const assignMember = async (memberId) => {
+            if (assignedIds.has(memberId)) return;
+
+            const member = membersData.find(m => m.id === memberId);
+            const btn = document.getElementById(`btn-${memberId}`);
+            const teamIndex = finalMapping[memberId];
+
+            // Validate team index exists
+            if (teamIndex === undefined || teamIndex < 0 || teamIndex > 2) {
+                alert('팀 배정 정보가 올바르지 않습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+
+            const currentTeam = teams[teamIndex];
+
+            // Check if team is already full (6 members max)
+            if (currentTeam.length >= 6) {
+                alert('해당 팀은 이미 정원(6명)이 찼습니다.');
+                return;
+            }
+
+            // Check department quota for the team
+            const deptCount = currentTeam.filter(m => m.dept === member.dept).length;
+            
+            // 인재육성팀 or 영상미디어팀: 한 팀당 최대 3명
+            if ((member.dept === '인재육성팀' || member.dept === '영상미디어팀') && deptCount >= 3) {
+                alert(`${member.dept}은(는) 해당 팀에 이미 최대 인원(3명)이 배정되었습니다.`);
+                return;
+            }
+
+            // 컬처파트: 한 팀당 최대 1명
+            if (member.dept === '컬처파트' && deptCount >= 1) {
+                alert('컬처파트는 각 팀에 1명만 배정됩니다.');
+                return;
+            }
+
+            // 학습혁신담당: 한 팀당 최대 1명
+            if (member.dept === '학습혁신담당' && deptCount >= 1) {
+                alert('학습혁신담당은 한 팀에만 배정됩니다.');
+                return;
+            }
+
+            // Save to API first
+            const saved = await saveAssignmentToAPI(member, teamIndex);
+            if (!saved) {
+                alert('서버 저장 실패. 다시 시도해주세요.');
+                return;
+            }
+
+            // Save to Firestore for user-specific persistence
+            await saveTeamAssignmentToFirestore(memberId, teamIndex);
+
+            // Update local state
+            teams[teamIndex].push(member);
+            assignedIds.add(memberId);
+            assignedCount++;
+
+            btn.disabled = true;
+            btn.classList.add('bg-slate-100', 'text-slate-300');
+            btn.innerHTML += ' <i class="fa-solid fa-check ml-1"></i>';
+
+            updateBoard(teamIndex + 1);
+            updateProgress();
+            
+            // Save to localStorage for lunch-talk page
+            saveTeamsToLocalStorage();
+        };
+
+        const updateBoard = (teamNum) => {
+            const board = document.getElementById(`teamBoard${teamNum}`);
+            const countLabel = document.getElementById(`count${teamNum}`);
+            const teamMembers = teams[teamNum - 1];
+
+            countLabel.innerText = `${teamMembers.length}/6`;
+            
+            const lastMember = teamMembers[teamMembers.length - 1];
+            const memberEl = document.createElement('div');
+            memberEl.className = 'assigned-anim flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm';
+            memberEl.innerHTML = `
+                <span class="font-bold text-slate-800">${lastMember.name}</span>
+                <span class="dept-tag ${lastMember.color}">${lastMember.dept.replace('팀', '').replace('파트', '')}</span>
+            `;
+            board.appendChild(memberEl);
+        };
+
+        const updateProgress = () => {
+            const bar = document.getElementById('progressBar');
+            const text = document.getElementById('progressText');
+            const percentage = (assignedCount / 16) * 100;
+            
+            bar.style.width = `${percentage}%`;
+            text.innerText = `${assignedCount} / 16명`;
+        };
+
+        // Save teams to localStorage
+        const saveTeamsToLocalStorage = () => {
+            try {
+                localStorage.setItem('lunchTalkTeams', JSON.stringify(teams));
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        };
+
+        // Modal Functions
+        const showPasswordModal = () => {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').focus();
+        };
+
+        const closePasswordModal = () => {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMsg').classList.add('hidden');
+        };
+
+        const handleReset = async () => {
+            const input = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (input === '20260319') {
+                // Clear API data
+                await clearAllAssignments();
+                
+                // Clear all localStorage data
+                localStorage.removeItem('lunchTalkTeams');
+                localStorage.removeItem('teamBuildingLeaders');
+                
+                location.reload();
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        };
+
+        // Handle Enter key in modal
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleReset();
+        });
+
+        // Initialize page - Load from API instead of localStorage
+        const initializePage = async () => {
+            renderMembers();
+            await loadTeamsFromAPI();
+            startPolling(); // Start real-time updates
+            console.log('Page initialized with API data and polling started');
+        };
+
+        // Run on page load
+        initializePage();
+    </script>
+</body>
+</html>
